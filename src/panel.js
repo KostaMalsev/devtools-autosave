@@ -1,29 +1,36 @@
-
+// Class to read saved resources from local storage in DevTools
 DevToolsAutosaveSavedResourceReader = new class DevToolsAutosaveSavedResourceReader {
   
+  // Key to access saved resources in local storage
   localStorageKey = '__devToolsAutosaveSavedResources__';
   
+  // Key to access the page HTML in saved resources
   pageHTMLKey = '__pageHTML__';
   
   
+  // Retrieves saved resources from local storage
   getSavedResources() {
     
     return new Promise(resolve => {
     
+      // Script to execute in the inspected window to retrieve saved resources
       const script = `localStorage[\`${this.localStorageKey}\`]`;
       
+      // Evaluates the script in the inspected window and handles the result
       chrome.devtools.inspectedWindow.eval(
         script,
         function(result, isException) {
           
           const data = result;
           
+          // If no data is found, resolves the promise with an empty object
           if (!data) {
             
             resolve({});
             
           } else {
           
+            // Parses the data from JSON string to an object and resolves the promise
             resolve(JSON.parse(data));
             
           }
@@ -45,18 +52,22 @@ const resourcesEl = document.querySelector('.resources');
 
 async function renderSavedResources() {
   
+  // Creates an instance of the saved resource reader
   const savedResourceReader = DevToolsAutosaveSavedResourceReader;
   
+  // Retrieves saved resources
   const savedResources = await savedResourceReader.getSavedResources();
   
   
   let outHTML = '';
   
+  // Iterates through each saved resource
   for (let key in savedResources) {
     
     const resource = savedResources[key];
     
     
+    // Handles the page HTML resource
     if (key === savedResourceReader.pageHTMLKey) {
       
       let resourceContent = decodeUnicode(resource);
@@ -78,6 +89,7 @@ async function renderSavedResources() {
     }
     
     
+    // Handles other resources
     let resourceUrl = decodeURIComponent(resource.url);
     resourceUrl = escapeHTML(resourceUrl);
     
@@ -87,6 +99,7 @@ async function renderSavedResources() {
     
     let resourceType = resource.type;
     
+    // Adjusts the resource type for inspector resources
     if (resource.url.startsWith('inspector://')) {
       
       resourceType = 'inspector-' + resourceType;
@@ -107,6 +120,7 @@ async function renderSavedResources() {
     
   }
   
+  // If no resources are found, displays a message
   if (outHTML === '') {
     
     outHTML = '<div class="empty">No saved resources. To save a resource, edit it in DevTools.</div>';
@@ -114,9 +128,11 @@ async function renderSavedResources() {
   }
   
   
+  // Updates the resources element with the generated HTML
   resourcesEl.innerHTML = outHTML;
   
   
+  // Adds event listeners to each resource to toggle expansion
   resourcesEl.querySelectorAll('.resource').forEach(resourceEl => {
     
     const headerEl = resourceEl.querySelector('.header');
@@ -131,18 +147,15 @@ async function renderSavedResources() {
   
 }
 
-
-// re-render saved resources whenever the panel is shown (see extension.js)
-
+// Re-renders saved resources whenever the panel is shown (see extension.js)
 chrome.storage.local.onChanged.addListener(
   renderSavedResources
 );
 
-
-
-
+// Function to check the theme and adjust the panel accordingly
 function checkTheme() {
 
+  // Checks if the current theme is dark and adjusts the panel
   if (chrome.devtools.panels.themeName === 'dark') {
     
     document.body.classList.add('dark');
@@ -151,16 +164,12 @@ function checkTheme() {
   
 }
 
+// Calls the theme check function
 checkTheme();
 
+// Util functions for decoding Unicode and escaping HTML
 
-
-
-
-// util
-
-// base64 decode
-
+// Decodes Unicode characters in a string
 let decodeUnicode = (str) => {
 
   // going backwards: from bytestream, to percent-encoding, to original string
@@ -170,8 +179,7 @@ let decodeUnicode = (str) => {
 
 }
 
-
-// escape HTML
+// Escapes HTML characters in a string
 let escapeHTML = (str) => {
   
   const p = document.createElement('p');
@@ -184,7 +192,5 @@ let escapeHTML = (str) => {
   
 }
 
-
-
-
+// Icon for the arrow in the resources list
 const arrowIcon = `<svg class="arrow" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M0 0h24v24H0z" fill="none"></path><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path></svg>`;

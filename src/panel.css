@@ -1,25 +1,28 @@
-
+/* Set margin for the body */
 body {
   margin: 8px;
 }
 
+/* Set dark mode for the body */
 body.dark {
   background: #282828ff;
   color: #e3e3e3ff;
 }
 
-
+/* Set display and layout for the resources */
 .resources {
   display: flex;
   flex-flow: column;
   gap: 8px;
 }
 
+/* Set border radius and overflow for the resource */
 .resource {
   border-radius: 7px;
   overflow: hidden;
 }
 
+/* Set display and padding for the resource header */
 .resource .header {
   display: flex;
   padding: 10px 14px;
@@ -30,11 +33,13 @@ body.dark {
   cursor: default;
 }
 
+/* Set overflow and white space for the resource title */
 .resource .title {
   overflow-x: auto;
   white-space: nowrap;
 }
 
+/* Set margin, opacity, and user select for the resource header subtitle */
 .resource .header .subtitle {
   margin-left: auto;
   opacity: .72;
@@ -44,6 +49,7 @@ body.dark {
   -webkit-user-select: none;
 }
 
+/* Set opacity, fill, height, width, position, and transition for the resource header arrow */
 .resource .header .arrow {
   opacity: .5;
   fill: currentColor;
@@ -56,10 +62,12 @@ body.dark {
   transition: .18s ease-in-out;
 }
 
+/* Set transform for the resource header arrow when not expanded */
 .resource:not(.expanded) .header .arrow {
   transform: translateY(-50%) rotate(-90deg);
 }
 
+/* Set padding, font family, font size, white space, background, overflow, and max height for the resource content */
 .resource .content {
   padding: 10px 14px;
   font-family: monospace;
@@ -71,11 +79,12 @@ color-mix(in srgb, currentColor 3%, transparent);
   max-height: 200px;
 }
 
+/* Set display for the resource content when not expanded */
 .resource:not(.expanded) .content {
   display: none;
 }
 
-
+/* Set opacity, margin, and user select for the empty resource */
 .resources .empty {
   opacity: .72;
   margin: auto;

@@ -1,6 +1,7 @@
-
+// Creates a new panel in the Chrome DevTools with the specified title, icon, and HTML file.
 chrome.devtools.panels.create('Autosave', 'icon.png', 'panel.html', (panel) => {
   
+  // Listens for the panel to be shown and sets a storage value to mark the tab change.
   panel.onShown.addListener(() => {
     
     // re-render saved resources whenever the panel is shown (see panel.js)
@@ -11,18 +12,19 @@ chrome.devtools.panels.create('Autosave', 'icon.png', 'panel.html', (panel) => {
   
 });
 
-
-
-
+// Script to be injected into the inspected window to handle resource saving.
 const resourceSaverScript = `
 
 __DevToolsAutosaveResourceSaver__ = new class __DevToolsAutosaveResourceSaver__ {
   
+  // Key for storing saved resources in local storage.
   localStorageKey = '__devToolsAutosaveSavedResources__';
   
+  // Key for storing the page HTML in saved resources.
   pageHTMLKey = '__pageHTML__';
   
   
+  // Retrieves saved resources from local storage.
   getSavedResources() {
     
     const data = localStorage[this.localStorageKey];
@@ -33,11 +35,13 @@ __DevToolsAutosaveResourceSaver__ = new class __DevToolsAutosaveResourceSaver__ 
     
   }
   
+  // Saves resources to local storage.
   saveSavedResources(data) {
     localStorage[this.localStorageKey] = JSON.stringify(data);
   }
   
   
+  // Saves a single resource to the saved resources.
   saveResource(resource) {
     
     let savedResources = this.getSavedResources();
@@ -54,6 +58,7 @@ __DevToolsAutosaveResourceSaver__ = new class __DevToolsAutosaveResourceSaver__ 
     
   }
   
+  // Saves the page HTML to the saved resources.
   savePageHTML(html) {
     
     let savedResources = this.getSavedResources();
@@ -65,6 +70,7 @@ __DevToolsAutosaveResourceSaver__ = new class __DevToolsAutosaveResourceSaver__ 
   }
   
   
+  // Represents a resource to be saved.
   Resource = class Resource {
     
     url;
@@ -83,6 +89,7 @@ __DevToolsAutosaveResourceSaver__ = new class __DevToolsAutosaveResourceSaver__ 
 
 `;
 
+// Injects the resource saver script into the inspected window.
 chrome.devtools.inspectedWindow.eval(
   resourceSaverScript,
   function(result, isException) { }
@@ -96,9 +103,11 @@ chrome.devtools.inspectedWindow.eval(
 
 function onResourceContentCommitted(resource, content) {
       
+  // Encodes the URL and content for safe injection into the script.
   const encodedURL = resource.url.replaceAll('`', '%60');
   const encodedContent = encodeUnicode(content);
   
+  // Script to execute in the inspected window to save the resource.
   const script = `
   (() => {
     
@@ -115,16 +124,17 @@ function onResourceContentCommitted(resource, content) {
   })();
   `;
   
+  // Executes the script in the inspected window.
   chrome.devtools.inspectedWindow.eval(script);
   
 }
 
+// Listens for resource content changes in the inspected window.
 chrome.devtools.inspectedWindow.onResourceContentCommitted.addListener(
   onResourceContentCommitted
 );
 
-
-
+// Script to observe and save HTML changes in the inspected window.
 const htmlObserverScript = `
 (() => {
   
@@ -148,17 +158,13 @@ const callback = (mutationList, observer) => {
   
 };
 
-
-// Create an observer instance linked to the callback function
+// Creates a MutationObserver to observe changes in the document.
 const observer = new MutationObserver(callback);
 
-// Start observing the target node for configured mutations
+// Starts observing the document for configured mutations.
 observer.observe(document, config);
 
-
-
-// util
-// base64 encode
+// Util function to base64 encode Unicode characters.
 let encodeUnicode = (str) => {
 
   // first we use encodeURIComponent to get percent-encoded UTF-8,
@@ -174,19 +180,13 @@ let encodeUnicode = (str) => {
 })();
 `;
 
+// Injects the HTML observer script into the inspected window.
 chrome.devtools.inspectedWindow.eval(
   htmlObserverScript,
   function(result, isException) { }
 );
 
-
-
-
-
-// util
-
-// base64 encode
-
+// Util function to base64 encode Unicode characters.
 let encodeUnicode = (str) => {
 
   // first we use encodeURIComponent to get percent-encoded UTF-8,
