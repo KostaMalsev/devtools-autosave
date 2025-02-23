@@ -9,7 +9,20 @@
   "author": "benhatsor",
   "homepage_url": "https://github.com/benhatsor/devtools-autosave",
   "devtools_page": "devtools.html",
+  "key" : "lfhjlcinapcdmaabmkkmeohefhggaejf",
   "permissions": [
-      "storage"
-  ]
+    "storage",
+    "identity"
+  ],
+  "host_permissions": [
+    "https://github.com/*",
+    "https://*.vercel.app/*"
+  ],
+  "oauth2": {
+    "client_id": "Ov23lik5f0eJVREk5CdX",
+    "scopes": [
+      "repo",
+      "gist"
+    ]
+  }
 }

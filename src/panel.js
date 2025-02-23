@@ -194,3 +194,46 @@ let escapeHTML = (str) => {
 
 // Icon for the arrow in the resources list
 const arrowIcon = `<svg class="arrow" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M0 0h24v24H0z" fill="none"></path><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path></svg>`;
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Remove any existing auth buttons first
+  const existingButtons = document.querySelectorAll('.auth-button');
+  existingButtons.forEach(button => button.remove());
+
+  // Create new button
+  const authButton = document.createElement('button');
+  authButton.className = 'auth-button';
+  authButton.textContent = 'Sign in with GitHub';
+  document.body.insertBefore(authButton, resourcesEl);
+
+  const githubAuth = new GitHubAuth();
+
+  async function updateAuthButtonState() {
+      try {
+          const isAuthenticated = await githubAuth.isAuthenticated();
+          authButton.textContent = isAuthenticated ? 'Sign Out of GitHub' : 'Sign in with GitHub';
+          authButton.classList.toggle('signed-in', isAuthenticated);
+      } catch (error) {
+          console.error('Error updating button state:', error);
+      }
+  }
+
+  authButton.addEventListener('click', async () => {
+      try {
+          const isAuthenticated = await githubAuth.isAuthenticated();
+          if (isAuthenticated) {
+              await githubAuth.logout();
+          } else {
+              await githubAuth.authenticate();
+          }
+          await updateAuthButtonState();
+      } catch (error) {
+          console.error('Auth action failed:', error);
+          authButton.textContent = 'Auth Error - Try Again';
+      }
+  });
+
+  // Initial state update
+  await updateAuthButtonState();
+});
