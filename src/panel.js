@@ -234,26 +234,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Listen for messages from an external web page
-  chrome.runtime.onMessageExternal.addListener(function (request, sender, sendResponse) {
-    console.log("Message received from web page:", request);
-
-    // Check if the message contains an API token
-    if (request.api_token) {
-      console.log("API Token received:", request.api_token);
-
-      // Store the API token securely in chrome.storage.local
-      chrome.storage.local.set({ api_token: request.api_token }, () => {
-        console.log("API Token stored securely in chrome.storage.local");
-      });
-
-      // Send a success response back to the web page
-      sendResponse({ status: "success", message: "API token received successfully" });
-    } else {
-      sendResponse({ status: "error", message: "No valid API token found in message" });
-    }
-  });
-
   // Initial state update
   await updateAuthButtonState();
+
+  // Listen for messages from an external web page
+  window.addEventListener("message", (event) => {
+    //if (event.origin !== "https://devtools-autosave.vercel.app") return;
+
+    if (event.data.action === "github_oauth" && event.data.token) {
+      console.log("Received OAuth token from auth.html:", event.data.token);
+
+      //Store token securely in Chrome storage
+      chrome.storage.local.set({ github_token: event.data.token }, () => {
+        console.log("GitHub token saved successfully.");
+      });
+    }
+  });
 });
