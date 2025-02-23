@@ -3,6 +3,9 @@ const AUTH_TOKEN_KEY = 'github_auth_token';
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
+
+    console.log('Got message in content scrip listner',request.message,request.code)
+
     if (request.message === 'AUTH_CODE') {
       // Make request to backend with the code
       fetch('https://devtools-autosave.vercel.app/api/oauth-token', {
@@ -14,6 +17,7 @@ chrome.runtime.onMessage.addListener(
       })
       .then(response => response.json())
       .then(data => {
+        console.log('got data from backend:',data)
         if (data.access_token) {
           // Store token in local storage
           chrome.storage.local.set({ [AUTH_TOKEN_KEY]: data.access_token }, () => {
