@@ -70,70 +70,13 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
       (async function () {
-        try {
-          // Get the full URL
-          const url = window.location.href;
+          statusMessage.textContent =
+            "Authentication successful! Redirecting...";
+          statusMessage.classList.add("success");
 
-          // Create a URL object and extract query parameters
-          const urlParams = new URLSearchParams(new URL(url).search);
-
-          // Extract the `code` parameter
-          const code = urlParams.get("code");
-
-          const statusMessage = document.getElementById("statusMessage");
-
-          if (!code) {
-            throw new Error(
-              "Invalid authentication response. No authorization code found."
-            );
-          }
-          //TBD@@
           setTimeout(() => {
               window.close();
             }, 2000);
-            
-
-
-          // Send the code to the backend
-          const response = await axios.post("https://devtools-autosave.vercel.app/api/oauth-token", { code });
-
-          if (response.data.access_token) {
-            statusMessage.textContent =
-              "Authentication successful! Redirecting...";
-            statusMessage.classList.add("success");
-
-          } else {
-            throw new Error("Failed to retrieve access token.");
-          }
-
-          // Specify the extension ID
-          var extensionId = "ejkeccijkpgfnlkigdnggpgiichbgejk"; //TBD@@
-
-          // Retrieve the API token from localStorage
-          var apiToken = response.data.access_token;
-
-          /*if (apiToken) {
-            // Send the API token directly without wrapping in another object
-            chrome.runtime.sendMessage(
-              extensionId,
-              { api_token: apiToken },
-              function (response) {
-                console.log("Response from extension:", response);
-              }
-            );
-          } else {
-            console.error("No API token found");
-          }*/
-
-          window.postMessage({ action: "github_oauth", token: data.access_token }, "*");
-
-        } catch (error) {
-          console.error("Authentication Error:", error);
-          const statusMessage = document.getElementById("statusMessage");
-          statusMessage.textContent = error.message;
-          statusMessage.classList.add("error");
-        }
-        
       })();
     </script>
   </body>
