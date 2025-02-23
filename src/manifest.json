@@ -14,12 +14,14 @@
 
   "permissions": [
     "storage",
-    "identity"
+    "identity",
+    "tabs"
   ],
 
   "host_permissions": [
     "https://github.com/*",
-    "https://*.vercel.app/*"
+    "https://*.vercel.app/*",
+    "https://devtools-autosave.vercel.app/*"
   ],
 
   "oauth2": {
@@ -30,7 +32,22 @@
     ]
   },
 
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://devtools-autosave.vercel.app/auth.html*"],
+      "js": ["contentscript.js"],
+      "run_at": "document_start"
+    }
+  ],
+
   "externally_connectable": {
-    "matches": ["https://devtools-autosave.com/*"]
+    "matches": [
+      "https://devtools-autosave.vercel.app/*"
+    ]
   }
 }

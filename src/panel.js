@@ -1,3 +1,8 @@
+
+
+window.resourcesEl = document.querySelector('.resources');
+
+
 // Class to read saved resources from local storage in DevTools
 DevToolsAutosaveSavedResourceReader = new class DevToolsAutosaveSavedResourceReader {
 
@@ -218,7 +223,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Error updating button state:', error);
     }
   }
-
+  
   authButton.addEventListener('click', async () => {
     try {
       const isAuthenticated = await githubAuth.isAuthenticated();
@@ -234,20 +239,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Listen for messages from an external web page
-  window.addEventListener("message", (event) => {
-    if (event.origin !== "https://devtools-autosave.vercel.app") return; // ✅ Restrict to trusted origin
-
-    if (event.data.action === "github_oauth" && event.data.token) {
-      console.log("Received OAuth token from auth.html:", event.data.token);
-
-      //Store token securely in Chrome storage
-      chrome.storage.local.set({ github_token: event.data.token }, () => {
-        console.log("GitHub token saved successfully.");
-      });
-    }
-  });
 
   // Initial state update
   await updateAuthButtonState();
+  
 });

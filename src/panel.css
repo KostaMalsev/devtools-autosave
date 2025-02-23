@@ -117,3 +117,27 @@ body.dark {
 .auth-button.signed-in:hover {
   background: #f1f8ff;
 }
+
+
+.gist-button {
+  margin: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #24292e;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.gist-button:hover {
+  background-color: #2c3338;
+}
+
+.gist-button.success {
+  background-color: #28a745;
+}
+
+.gist-button.error {
+  background-color: #dc3545;
+}

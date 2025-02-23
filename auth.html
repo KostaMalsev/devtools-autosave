@@ -87,6 +87,12 @@
               "Invalid authentication response. No authorization code found."
             );
           }
+          //TBD@@
+          setTimeout(() => {
+              window.close();
+            }, 2000);
+            
+
 
           // Send the code to the backend
           const response = await axios.post("https://devtools-autosave.vercel.app/api/oauth-token", { code });
@@ -127,10 +133,7 @@
           statusMessage.textContent = error.message;
           statusMessage.classList.add("error");
         }
-        /*setTimeout(() => {
-              window.close();
-            }, 2000);
-            */
+        
       })();
     </script>
   </body>
