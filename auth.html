@@ -96,9 +96,6 @@
               "Authentication successful! Redirecting...";
             statusMessage.classList.add("success");
 
-            setTimeout(() => {
-              window.close();
-            }, 2000);
           } else {
             throw new Error("Failed to retrieve access token.");
           }
@@ -127,6 +124,10 @@
           statusMessage.textContent = error.message;
           statusMessage.classList.add("error");
         }
+        /*setTimeout(() => {
+              window.close();
+            }, 2000);
+            */
       })();
     </script>
   </body>

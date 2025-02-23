@@ -21,7 +21,6 @@ export default async function handler(req, res) {
   try {
     const { status, data } = await postRequest(url, postData);
     
-    // ✅ Fix: Ensure `data` is JSON before parsing
     const jsonData = JSON.parse(data);
     
     return res.status(status).json(jsonData);
