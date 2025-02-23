@@ -104,7 +104,7 @@
           var extensionId = "ejkeccijkpgfnlkigdnggpgiichbgejk"; //TBD@@
 
           // Retrieve the API token from localStorage
-          var apiToken = window.localStorage.getItem("api_token");
+          var apiToken = response.data.access_token;
 
           if (apiToken) {
             // Send the API token directly without wrapping in another object
@@ -116,7 +116,7 @@
               }
             );
           } else {
-            console.error("No API token found in localStorage");
+            console.error("No API token found");
           }
         } catch (error) {
           console.error("Authentication Error:", error);
