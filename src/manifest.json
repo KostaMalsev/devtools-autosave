@@ -1,23 +1,27 @@
 {
   "name": "DevTools Autosave",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Never lose any changes you make through DevTools to styles, HTML, or other page resources on reload. No more tears.",
+  "author": "benhatsor",
+  "homepage_url": "https://github.com/benhatsor/devtools-autosave",
+
   "icons": {
     "96": "icon.png"
   },
-  "description": "Never lose any changes you make through DevTools to styles, HTML, or other page resources on reload. No more tears.",
-  "version": "1.0",
-  "manifest_version": 3,
-  "author": "benhatsor",
-  "homepage_url": "https://github.com/benhatsor/devtools-autosave",
+
   "devtools_page": "devtools.html",
-  "key" : "lfhjlcinapcdmaabmkkmeohefhggaejf",
+
   "permissions": [
     "storage",
     "identity"
   ],
+
   "host_permissions": [
     "https://github.com/*",
     "https://*.vercel.app/*"
   ],
+
   "oauth2": {
     "client_id": "Ov23lik5f0eJVREk5CdX",
     "scopes": [
@@ -25,7 +29,8 @@
       "gist"
     ]
   },
+
   "externally_connectable": {
-    "matches": ["https://devtools-autosave*"]
+    "matches": ["https://devtools-autosave.com/*"]
   }
 }
