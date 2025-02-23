@@ -69,35 +69,24 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-
-      function parseQueryString(query) {
-        return Object.fromEntries(new URLSearchParams(query));
-      }
-
-
       (async function () {
         try {
-          const queryParams = parseQueryString(window.location.search);
-          const { code, state } = queryParams;
+          // Get the full URL
+          const url = window.location.href;
+
+          // Create a URL object and extract query parameters
+          const urlParams = new URLSearchParams(new URL(url).search);
+
+          // Extract the `code` parameter
+          const code = urlParams.get("code");
+
           const statusMessage = document.getElementById("statusMessage");
 
-          if (!code || !state) {
+          if (!code) {
             throw new Error(
               "Invalid authentication response. No authorization code found."
             );
           }
-
-          const storedCSRFToken = localStorage.getItem("latestCSRFToken");
-
-          if (state !== storedCSRFToken) {
-            localStorage.removeItem("latestCSRFToken");
-            throw new Error(
-              "CSRF token mismatch. Possible security issue detected."
-            );
-          }
-
-          // Remove CSRF token since it's used
-          localStorage.removeItem("latestCSRFToken");
 
           // Send the code to the backend
           const response = await axios.post("/api/oauth-token", { code });

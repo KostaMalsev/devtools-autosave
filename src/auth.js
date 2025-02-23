@@ -7,7 +7,7 @@ class GitHubAuth {
    
     async authenticate() {
       try {
-        const link = `${githubAuthUrl}?client_id=${this.clientId}&scope=${this.scope}`;
+        const link = `${this.githubAuthUrl}?client_id=${this.clientId}&scope=${this.scope}`;
         window.open(link, '_blank');
 
       } catch (error) {
