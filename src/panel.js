@@ -234,12 +234,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Initial state update
-  await updateAuthButtonState();
-
   // Listen for messages from an external web page
   window.addEventListener("message", (event) => {
-    //if (event.origin !== "https://devtools-autosave.vercel.app") return;
+    if (event.origin !== "https://devtools-autosave.vercel.app") return; // ✅ Restrict to trusted origin
 
     if (event.data.action === "github_oauth" && event.data.token) {
       console.log("Received OAuth token from auth.html:", event.data.token);
@@ -250,4 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
   });
+
+  // Initial state update
+  await updateAuthButtonState();
 });

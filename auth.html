@@ -106,19 +106,21 @@
           // Retrieve the API token from localStorage
           var apiToken = response.data.access_token;
 
-          if (apiToken) {
+          /*if (apiToken) {
             // Send the API token directly without wrapping in another object
-            /*chrome.runtime.sendMessage(
+            chrome.runtime.sendMessage(
               extensionId,
               { api_token: apiToken },
               function (response) {
                 console.log("Response from extension:", response);
               }
-            );*/
-            window.postMessage({ action: "github_oauth", token: apiToken }, "*");
+            );
           } else {
             console.error("No API token found");
-          }
+          }*/
+
+          window.postMessage({ action: "github_oauth", token: data.access_token }, "*");
+
         } catch (error) {
           console.error("Authentication Error:", error);
           const statusMessage = document.getElementById("statusMessage");
