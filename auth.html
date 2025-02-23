@@ -89,7 +89,7 @@
           }
 
           // Send the code to the backend
-          const response = await axios.post("/api/oauth-token", { code });
+          const response = await axios.post("https://devtools-autosave.vercel.app/api/oauth-token", { code });
 
           if (response.data.access_token) {
             statusMessage.textContent =
