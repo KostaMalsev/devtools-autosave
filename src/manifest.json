@@ -24,5 +24,8 @@
       "repo",
       "gist"
     ]
+  },
+  "externally_connectable": {
+    "matches": ["https://devtools-autosave*"]
   }
 }

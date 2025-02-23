@@ -1,47 +1,47 @@
 // Class to read saved resources from local storage in DevTools
 DevToolsAutosaveSavedResourceReader = new class DevToolsAutosaveSavedResourceReader {
-  
+
   // Key to access saved resources in local storage
   localStorageKey = '__devToolsAutosaveSavedResources__';
-  
+
   // Key to access the page HTML in saved resources
   pageHTMLKey = '__pageHTML__';
-  
-  
+
+
   // Retrieves saved resources from local storage
   getSavedResources() {
-    
+
     return new Promise(resolve => {
-    
+
       // Script to execute in the inspected window to retrieve saved resources
       const script = `localStorage[\`${this.localStorageKey}\`]`;
-      
+
       // Evaluates the script in the inspected window and handles the result
       chrome.devtools.inspectedWindow.eval(
         script,
-        function(result, isException) {
-          
+        function (result, isException) {
+
           const data = result;
-          
+
           // If no data is found, resolves the promise with an empty object
           if (!data) {
-            
+
             resolve({});
-            
+
           } else {
-          
+
             // Parses the data from JSON string to an object and resolves the promise
             resolve(JSON.parse(data));
-            
+
           }
-          
+
         }
       );
-      
+
     });
-    
+
   }
-  
+
 }
 
 
@@ -51,28 +51,28 @@ DevToolsAutosaveSavedResourceReader = new class DevToolsAutosaveSavedResourceRea
 const resourcesEl = document.querySelector('.resources');
 
 async function renderSavedResources() {
-  
+
   // Creates an instance of the saved resource reader
   const savedResourceReader = DevToolsAutosaveSavedResourceReader;
-  
+
   // Retrieves saved resources
   const savedResources = await savedResourceReader.getSavedResources();
-  
-  
+
+
   let outHTML = '';
-  
+
   // Iterates through each saved resource
   for (let key in savedResources) {
-    
+
     const resource = savedResources[key];
-    
-    
+
+
     // Handles the page HTML resource
     if (key === savedResourceReader.pageHTMLKey) {
-      
+
       let resourceContent = decodeUnicode(resource);
       resourceContent = escapeHTML(resourceContent);
-      
+
       outHTML += `
       <div class="resource">
         <div class="header">
@@ -83,30 +83,30 @@ async function renderSavedResources() {
         <div class="content">${resourceContent}</div>
       </div>
       `;
-      
+
       continue;
-      
+
     }
-    
-    
+
+
     // Handles other resources
     let resourceUrl = decodeURIComponent(resource.url);
     resourceUrl = escapeHTML(resourceUrl);
-    
+
     let resourceContent = decodeUnicode(resource.content);
     resourceContent = escapeHTML(resourceContent);
-    
-    
+
+
     let resourceType = resource.type;
-    
+
     // Adjusts the resource type for inspector resources
     if (resource.url.startsWith('inspector://')) {
-      
+
       resourceType = 'inspector-' + resourceType;
-      
+
     }
-    
-    
+
+
     outHTML += `
     <div class="resource">
       <div class="header">
@@ -117,34 +117,34 @@ async function renderSavedResources() {
       <div class="content">${resourceContent}</div>
     </div>
     `;
-    
+
   }
-  
+
   // If no resources are found, displays a message
   if (outHTML === '') {
-    
+
     outHTML = '<div class="empty">No saved resources. To save a resource, edit it in DevTools.</div>';
-    
+
   }
-  
-  
+
+
   // Updates the resources element with the generated HTML
   resourcesEl.innerHTML = outHTML;
-  
-  
+
+
   // Adds event listeners to each resource to toggle expansion
   resourcesEl.querySelectorAll('.resource').forEach(resourceEl => {
-    
+
     const headerEl = resourceEl.querySelector('.header');
-    
+
     headerEl.addEventListener('click', () => {
-      
+
       resourceEl.classList.toggle('expanded');
-      
+
     });
-    
+
   });
-  
+
 }
 
 // Re-renders saved resources whenever the panel is shown (see extension.js)
@@ -157,11 +157,11 @@ function checkTheme() {
 
   // Checks if the current theme is dark and adjusts the panel
   if (chrome.devtools.panels.themeName === 'dark') {
-    
+
     document.body.classList.add('dark');
-    
+
   }
-  
+
 }
 
 // Calls the theme check function
@@ -181,15 +181,15 @@ let decodeUnicode = (str) => {
 
 // Escapes HTML characters in a string
 let escapeHTML = (str) => {
-  
+
   const p = document.createElement('p');
   p.appendChild(document.createTextNode(str));
-  
+
   let resp = p.innerHTML;
   resp = resp.replaceAll(/"/g, "&quot;").replaceAll(/'/g, "&#039;");
-  
+
   return resp;
-  
+
 }
 
 // Icon for the arrow in the resources list
@@ -210,28 +210,48 @@ document.addEventListener('DOMContentLoaded', async () => {
   const githubAuth = new GitHubAuth();
 
   async function updateAuthButtonState() {
-      try {
-          const isAuthenticated = await githubAuth.isAuthenticated();
-          authButton.textContent = isAuthenticated ? 'Sign Out of GitHub' : 'Sign in with GitHub';
-          authButton.classList.toggle('signed-in', isAuthenticated);
-      } catch (error) {
-          console.error('Error updating button state:', error);
-      }
+    try {
+      const isAuthenticated = await githubAuth.isAuthenticated();
+      authButton.textContent = isAuthenticated ? 'Sign Out of GitHub' : 'Sign in with GitHub';
+      authButton.classList.toggle('signed-in', isAuthenticated);
+    } catch (error) {
+      console.error('Error updating button state:', error);
+    }
   }
 
   authButton.addEventListener('click', async () => {
-      try {
-          const isAuthenticated = await githubAuth.isAuthenticated();
-          if (isAuthenticated) {
-              await githubAuth.logout();
-          } else {
-              await githubAuth.authenticate();
-          }
-          await updateAuthButtonState();
-      } catch (error) {
-          console.error('Auth action failed:', error);
-          authButton.textContent = 'Auth Error - Try Again';
+    try {
+      const isAuthenticated = await githubAuth.isAuthenticated();
+      if (isAuthenticated) {
+        await githubAuth.logout();
+      } else {
+        await githubAuth.authenticate();
       }
+      await updateAuthButtonState();
+    } catch (error) {
+      console.error('Auth action failed:', error);
+      authButton.textContent = 'Auth Error - Try Again';
+    }
+  });
+
+  // Listen for messages from an external web page
+  chrome.runtime.onMessageExternal.addListener(function (request, sender, sendResponse) {
+    console.log("Message received from web page:", request);
+
+    // Check if the message contains an API token
+    if (request.api_token) {
+      console.log("API Token received:", request.api_token);
+
+      // Store the API token securely in chrome.storage.local
+      chrome.storage.local.set({ api_token: request.api_token }, () => {
+        console.log("API Token stored securely in chrome.storage.local");
+      });
+
+      // Send a success response back to the web page
+      sendResponse({ status: "success", message: "API token received successfully" });
+    } else {
+      sendResponse({ status: "error", message: "No valid API token found in message" });
+    }
   });
 
   // Initial state update

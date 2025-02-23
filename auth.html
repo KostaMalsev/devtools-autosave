@@ -1,112 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Authenticating...</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+      }
 
-        .container {
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
+      .container {
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        width: 300px;
+      }
 
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
 
-        .message {
-            font-size: 16px;
-            margin-top: 10px;
-            color: #555;
-        }
+      .message {
+        font-size: 16px;
+        margin-top: 10px;
+        color: #555;
+      }
 
-        .error {
-            color: red;
-        }
+      .error {
+        color: red;
+      }
 
-        .success {
-            color: green;
-        }
+      .success {
+        color: green;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="container">
-        <h2>Authenticating...</h2>
-        <div class="loader"></div>
-        <p class="message" id="statusMessage">Please wait while we complete your authentication.</p>
+      <h2>Authenticating...</h2>
+      <div class="loader"></div>
+      <p class="message" id="statusMessage">
+        Please wait while we complete your authentication.
+      </p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/query-string@6.14.1/dist/query-string.min.js"></script>
     <script>
-        (async function() {
-            try {
-                const queryParams = queryString.parse(window.location.search);
-                const { code, state } = queryParams;
-                const statusMessage = document.getElementById("statusMessage");
+      (async function () {
+        try {
+          const queryParams = queryString.parse(window.location.search);
+          const { code, state } = queryParams;
+          const statusMessage = document.getElementById("statusMessage");
 
-                if (!code || !state) {
-                    throw new Error("Invalid authentication response. No authorization code found.");
-                }
+          if (!code || !state) {
+            throw new Error(
+              "Invalid authentication response. No authorization code found."
+            );
+          }
 
-                const storedCSRFToken = localStorage.getItem("latestCSRFToken");
-                
-                if (state !== storedCSRFToken) {
-                    localStorage.removeItem("latestCSRFToken");
-                    throw new Error("CSRF token mismatch. Possible security issue detected.");
-                }
+          const storedCSRFToken = localStorage.getItem("latestCSRFToken");
 
-                // Remove CSRF token since it's used
-                localStorage.removeItem("latestCSRFToken");
+          if (state !== storedCSRFToken) {
+            localStorage.removeItem("latestCSRFToken");
+            throw new Error(
+              "CSRF token mismatch. Possible security issue detected."
+            );
+          }
 
-                // Send the code to the backend
-                const response = await axios.post("/api/oauth-token", { code });
+          // Remove CSRF token since it's used
+          localStorage.removeItem("latestCSRFToken");
 
-                if (response.data.access_token) {
-                    statusMessage.textContent = "Authentication successful! Redirecting...";
-                    statusMessage.classList.add("success");
+          // Send the code to the backend
+          const response = await axios.post("/api/oauth-token", { code });
 
-                    setTimeout(() => {
-                        window.close();
-                    }, 2000);
-                } else {
-                    throw new Error("Failed to retrieve access token.");
-                }
+          if (response.data.access_token) {
+            statusMessage.textContent =
+              "Authentication successful! Redirecting...";
+            statusMessage.classList.add("success");
 
-            } catch (error) {
-                console.error("Authentication Error:", error);
-                const statusMessage = document.getElementById("statusMessage");
-                statusMessage.textContent = error.message;
-                statusMessage.classList.add("error");
-            }
-        })();
+            setTimeout(() => {
+              window.close();
+            }, 2000);
+          } else {
+            throw new Error("Failed to retrieve access token.");
+          }
+
+          // Specify the extension ID
+          var extensionId = "ejkeccijkpgfnlkigdnggpgiichbgejk"; //TBD@@
+
+          // Retrieve the API token from localStorage
+          var apiToken = window.localStorage.getItem("api_token");
+
+          if (apiToken) {
+            // Send the API token directly without wrapping in another object
+            chrome.runtime.sendMessage(
+              extensionId,
+              { api_token: apiToken },
+              function (response) {
+                console.log("Response from extension:", response);
+              }
+            );
+
+          } else {
+            console.error("No API token found in localStorage");
+          }
+          
+        } catch (error) {
+          console.error("Authentication Error:", error);
+          const statusMessage = document.getElementById("statusMessage");
+          statusMessage.textContent = error.message;
+          statusMessage.classList.add("error");
+        }
+      })();
     </script>
-
-</body>
+  </body>
 </html>
