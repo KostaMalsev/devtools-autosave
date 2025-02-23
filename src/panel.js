@@ -232,7 +232,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         await githubAuth.authenticate();
       }
-      await updateAuthButtonState();
+      setTimeout(() => {
+        console.log('updating the auth state')
+        updateAuthButtonState();
+      }, 5000);
     } catch (error) {
       console.error('Auth action failed:', error);
       authButton.textContent = 'Auth Error - Try Again';

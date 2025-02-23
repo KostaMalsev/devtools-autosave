@@ -35,19 +35,5 @@
   "background": {
     "service_worker": "background.js",
     "type": "module"
-  },
-
-  "content_scripts": [
-    {
-      "matches": ["https://devtools-autosave.vercel.app/auth.html*"],
-      "js": ["contentscript.js"],
-      "run_at": "document_start"
-    }
-  ],
-
-  "externally_connectable": {
-    "matches": [
-      "https://devtools-autosave.vercel.app/*"
-    ]
   }
 }

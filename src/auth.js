@@ -16,31 +16,11 @@ class GitHubAuth {
       }
     }
    
-    async getAccessToken(code) {
-      try {
-        const response = await fetch(this.apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code })
-        });
-   
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(`Token exchange failed: ${errorData.message || response.statusText}`);
-        }
-   
-        const data = await response.json();
-        return data.access_token;
-      } catch (error) {
-        console.error('Token exchange failed:', error);
-        throw error;
-      }
-    }
-   
     async isAuthenticated() {
       try {
-        const { github_token } = await chrome.storage.local.get('github_token');
-        return !!github_token;
+        const github_token  = await chrome.storage.local.get('github_auth_token');
+        console.log('we have a token:',github_token)
+        return Object.keys(github_token).length !== 0;
       } catch (error) {
         console.error('Error checking auth status:', error);
         return false;
@@ -49,7 +29,7 @@ class GitHubAuth {
    
     async logout() {
       try {
-        await chrome.storage.local.remove('github_token');
+        await chrome.storage.local.remove('github_auth_token');
         console.log('Successfully logged out');
       } catch (error) {
         console.error('Logout failed:', error);
@@ -57,32 +37,3 @@ class GitHubAuth {
       }
     }
    }
-   
-   // Setup auth button
-   const authButton = document.createElement('button');
-   authButton.className = 'auth-button';
-   document.body.insertBefore(authButton, resourcesEl);
-   
-   const githubAuth = new GitHubAuth();
-   
-   async function updateAuthButtonState() {
-    const isAuthenticated = await githubAuth.isAuthenticated();
-    authButton.textContent = isAuthenticated ? 'Sign Out of GitHub' : 'Sign in with GitHub';
-    authButton.classList.toggle('signed-in', isAuthenticated);
-   }
-   
-   authButton.addEventListener('click', async () => {
-    try {
-      const isAuthenticated = await githubAuth.isAuthenticated();
-      if (isAuthenticated) {
-        await githubAuth.logout();
-      } else {
-        await githubAuth.authenticate();
-      }
-      await updateAuthButtonState();
-    } catch (error) {
-      console.error('Auth action failed:', error);
-    }
-   });
-   
-   updateAuthButtonState();
