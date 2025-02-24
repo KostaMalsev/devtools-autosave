@@ -30,20 +30,20 @@
 </head>
 <body>
     <h1>Privacy Policy for DevTools Autosave</h1>
-    <p class="last-updated">Last Updated: February 19, 2025</p>
-
+    <p class="last-updated">Last Updated: February 24, 2025</p>
+    
     <h2>Overview</h2>
     <p>DevTools Autosave is committed to protecting your privacy. This Privacy Policy explains how our extension handles data.</p>
-
+    
     <h2>Data Collection and Usage</h2>
-    <p>DevTools Autosave operates entirely locally within your browser. We:</p>
+    <p>DevTools Autosave operates primarily locally within your browser. We:</p>
     <ul>
         <li>DO NOT collect any personal information</li>
         <li>DO NOT track your browsing activity</li>
-        <li>DO NOT send data to external servers</li>
-        <li>DO NOT share any information with third parties</li>
+        <li>DO NOT send data to external servers (except when explicitly using the GitHub Gist feature)</li>
+        <li>DO NOT share any information with third parties beyond GitHub (when using the Gist feature)</li>
     </ul>
-
+    
     <h2>Local Storage Usage</h2>
     <p>The extension uses Chrome's local storage to:</p>
     <ul>
@@ -51,25 +51,41 @@
         <li>Persist changes between browser sessions</li>
         <li>Store only the DevTools edits you make</li>
     </ul>
-
+    
+    <h2>GitHub Integration (Optional)</h2>
+    <p>The extension offers an optional feature to save your DevTools modifications to GitHub Gists:</p>
+    <ul>
+        <li>This feature is completely optional and must be explicitly activated by you</li>
+        <li>When you choose to save to GitHub, you will need to authenticate with your GitHub account</li>
+        <li>We use GitHub's OAuth2 authentication flow to securely connect to your account</li>
+        <li>Your GitHub credentials are never stored by our extension</li>
+        <li>We only receive and use an authentication token to create Gists on your behalf</li>
+        <li>The content saved to GitHub Gists contains only your DevTools modifications</li>
+        <li>You control whether Gists are created as public or private</li>
+    </ul>
+    
     <h2>Data Control</h2>
     <p>You maintain full control over your data:</p>
     <ul>
         <li>All data is stored exclusively in your browser's local storage</li>
         <li>Data persists until you clear your browser data</li>
         <li>You can remove stored data at any time through your browser settings</li>
+        <li>For GitHub Gists, you can manage or delete them through your GitHub account</li>
+        <li>You can revoke the extension's access to your GitHub account at any time through GitHub settings</li>
     </ul>
-
+    
     <h2>Required Permissions</h2>
     <p>The extension requires the following permissions:</p>
     <ul>
         <li>Storage: To save your DevTools modifications locally</li>
         <li>DevTools: To monitor and preserve your DevTools changes</li>
+        <li>Identity: Only used for GitHub authentication when you choose to save to Gists</li>
+        <li>Tabs: To associate modifications with their respective web pages</li>
     </ul>
-
+    
     <h2>Updates to This Policy</h2>
     <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
-
+    
     <h2>Contact</h2>
     <p>If you have any questions about this Privacy Policy, please open an issue on our GitHub repository.</p>
 </body>
