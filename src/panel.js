@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       setTimeout(() => {
         console.log('updating the auth state')
         updateAuthButtonState();
-      }, 3000);
+      }, 5000);
     } catch (error) {
       console.error('Auth action failed:', error);
       authButton.textContent = 'Auth Error - Try Again';

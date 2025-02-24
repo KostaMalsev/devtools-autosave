@@ -13,14 +13,19 @@ class GistHelper {
             if(key == DevToolsAutosaveSavedResourceReader.pageHTMLKey){
 
                 content = decodeUnicode(resource);
-                files["page.html"] = { content };
+                files["current_page.html"] = { content };
 
             }else{
 
                 content = decodeUnicode(resource.content);//in this case the key is the url, content is saved css properties, type="document"
-                const filename = GistHelper.sanitizeFilename(resource.url.split("/").pop() || "resource");
-                const extension = GistHelper.getFileExtension(resource.type);
-                files[`${filename}.${extension}`] = { content };
+                let filename = GistHelper.sanitizeFilename(resource.url.split("/").pop() || "resource");
+
+                if(resource.type == 'document' && !filename.endsWith('.html')){
+                    filename += '.html'
+                }
+
+                files[filename] = { content };
+                
             }
 
         }
@@ -31,19 +36,7 @@ class GistHelper {
     static sanitizeFilename(filename) {
         return filename.replace(/[^a-zA-Z0-9._-]/g, "_"); // Remove invalid characters
     }
-
-    static getFileExtension(type) {
-        const typeMap = {
-            "text/css": "css",
-            "text/javascript": "js",
-            "text/html": "html",
-            "application/json": "json",
-            "inspector-stylesheet": "css",
-            "stylesheet": "css",
-            "script":"js"
-        };
-        return typeMap[type] || "txt"; // Default to `.txt` if unknown type
-    }
+    
 }
 
 
