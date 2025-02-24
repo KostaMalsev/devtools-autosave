@@ -8,6 +8,8 @@ Never lose any changes you make through DevTools to styles, HTML, or other page 
 Edit some resources in DevTools, then check the Autosave panel (in the DevTools' top bar) to see a list of all the resources you've edited in the inspected page and their contents.  
 
 This list is saved to your browser's local storage, meaning it persists between browser sessions. Just make sure to not clear your cookies.
+Additionally, you can save the modified files as a gist on your GitHub account
+
 
 ## What resources are saved?
 Any resource you modify through DevTools. This includes:
