@@ -1,6 +1,6 @@
 {
   "name": "DevTools Autosave",
-  "version": "1.0",
+  "version": "2.0",
   "manifest_version": 3,
   "description": "Never lose any changes you make through DevTools to styles, HTML, or other page resources on reload. No more tears.",
   "author": "benhatsor",
