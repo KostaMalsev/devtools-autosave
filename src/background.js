@@ -1,4 +1,3 @@
-// background.js
 chrome.tabs.onUpdated.addListener(
   function(tabId, changeInfo, tab) {
     // Check if this is our auth page with a code

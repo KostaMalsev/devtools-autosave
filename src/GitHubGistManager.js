@@ -55,9 +55,6 @@ class GitHubGistManager {
 
     async createGist(resources, pageUrl) {
         const { description, files } = GistHelper.prepareGistFiles(resources, pageUrl);
-        
-        console.log('about to push to gist:',description,files)
-
         const response = await fetch("https://api.github.com/gists", {
             method: "POST",
             headers: {
@@ -99,7 +96,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // Retrieve saved resources
             const savedResources = await DevToolsAutosaveSavedResourceReader.getSavedResources();
-            console.log('Here are saved resources:',savedResources)
             if (Object.keys(savedResources).length === 0) throw new Error("No resources to save");
 
             // Create the Gist
