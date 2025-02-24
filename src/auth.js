@@ -19,7 +19,6 @@ class GitHubAuth {
     async isAuthenticated() {
       try {
         const github_token  = await chrome.storage.local.get('github_auth_token');
-        console.log('we have a token:',github_token)
         return Object.keys(github_token).length !== 0;
       } catch (error) {
         console.error('Error checking auth status:', error);
