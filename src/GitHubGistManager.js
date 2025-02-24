@@ -94,6 +94,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 chrome.devtools.inspectedWindow.eval("window.location.href", (result) => resolve(result));
             });
 
+            saveGistButton.textContent = "Saving gist...";
+            // Add animation of button processing
+            saveGistButton.classList.add('in-process');
+
+
             // Retrieve saved resources
             const savedResources = await DevToolsAutosaveSavedResourceReader.getSavedResources();
             if (Object.keys(savedResources).length === 0) throw new Error("No resources to save");
@@ -103,6 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const gist = await gistManager.createGist(savedResources, pageUrl);
 
             // Show success message & open the Gist in a new tab
+            saveGistButton.classList.remove('in-process');
             saveGistButton.textContent = "Saved to Gist ✓";
             saveGistButton.classList.add("success");
             window.open(gist.html_url, "_blank");

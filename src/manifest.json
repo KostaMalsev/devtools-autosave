@@ -20,7 +20,6 @@
 
   "host_permissions": [
     "https://github.com/*",
-    "https://*.vercel.app/*",
     "https://devtools-autosave.vercel.app/*"
   ],
 
